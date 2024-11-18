@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Historial Sede{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1>Historial de Sedes</h1>
+            <input type="text" class="form-control search-bar" placeholder="Buscar sede..." id="searchInput">
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Dirección</th>
+                    <th scope="col">Municipio</th>
+                    <th scope="col">Opciones</th>
+                </tr>
+            </thead>
+            <tbody id="sedeTableBody">
+                {% for sede in sedes %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td class="nombre">{{ sede.nombre }}</td>
+                        <td>{{ sede.direccion }}</td>
+                        <td>{{ sede.Id_Municipio.nombre }}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditar{{ sede.id }}">
+                                <i class="bi bi-pencil"></i> Editar
+                            </button>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminar{{ sede.id }}">
+                                <i class="bi bi-trash"></i> Eliminar
+                            </button>
+
+                            <div class="modal fade" id="modalEditar{{ sede.id }}" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalEditarLabel">Editar Sede</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="POST" action="{% url 'actualizar_sede' sede.id %}">
+                                                {% csrf_token %}
+                                                <div class="form-group">
+                                                    <label for="nombre">Nombre</label>
+                                                    <input type="text" class="form-control" id="nombre" name="nombre" value="{{ sede.nombre }}" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="direccion">Dirección</label>
+                                                    <input type="text" class="form-control" id="direccion" name="direccion" value="{{ sede.direccion }}" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="municipio">Municipio</label>
+                                                    <select class="form-control" id="municipio" name="municipio" required>
+                                                        {% for municipio in municipios %}
+                                                            <option value="{{ municipio.id }}" {% if sede.Id_Municipio.id == municipio.id %}selected{% endif %}>{{ municipio.nombre }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary mt-3">Actualizar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="modalEliminar{{ sede.id }}" tabindex="-1" aria-labelledby="modalEliminarLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalEliminarLabel">Confirmar Eliminación</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p class="text-danger"><strong>Advertencia:</strong> Esta acción es irreversible. ¿Estás seguro de que deseas eliminar esta sede?</p>
+                                            <p>Nombre: {{ sede.nombre }}</p>
+                                            <p>Dirección: {{ sede.direccion }}</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <form method="POST" action="{% url 'eliminar_sede' sede.id %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button class="btn btn-secondary mb-3" onclick="window.history.back();">Volver</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const tableBody = document.getElementById('sedeTableBody');
+
+            if (searchInput && tableBody) {
+                searchInput.addEventListener('input', function() {
+                    const searchText = this.value.trim().toLowerCase();
+                    const rows = tableBody.getElementsByTagName('tr');
+
+                    Array.from(rows).forEach(row => {
+                        const nombre = row.querySelector('.nombre').textContent.toLowerCase();
+                        row.style.display = nombre.includes(searchText) ? '' : 'none';
+                    });
+                });
+            }
+        });
+    </script>
+
+{% endblock %}

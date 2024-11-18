@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Historial de Categoría{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1>Historial de Categorías</h1>
+            <input type="text" class="form-control search-bar" placeholder="Buscar por tipo..." id="searchInput">
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Opciones</th>
+                </tr>
+            </thead>
+            <tbody id="categoriaTableBody">
+                {% for categoria in categorias %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td class="tipo">{{ categoria.tipo }}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditar{{ categoria.id }}">
+                                <i class="bi bi-pencil"></i> Editar
+                            </button>
+                            <div class="modal fade" id="modalEditar{{ categoria.id }}" tabindex="-1" aria-labelledby="modalEditarLabel{{ categoria.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalEditarLabel{{ categoria.id }}">Editar Categoría</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="POST" action="{% url 'actualizar_categoria' categoria.id %}">
+                                                {% csrf_token %}
+                                                <div class="form-group">
+                                                    <label for="tipo">Tipo</label>
+                                                    <input type="text" class="form-control" id="tipo" name="tipo" value="{{ categoria.tipo }}" required>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary mt-3">Actualizar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminar{{ categoria.id }}">
+                                <i class="bi bi-trash"></i> Eliminar
+                            </button>
+                            <div class="modal fade" id="modalEliminar{{ categoria.id }}" tabindex="-1" aria-labelledby="modalEliminarLabel{{ categoria.id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalEliminarLabel{{ categoria.id }}">Confirmar Eliminación</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p class="text-danger"><strong>Advertencia:</strong> Esta acción es irreversible. ¿Estás seguro de que deseas eliminar esta categoría?</p>
+                                            <p>Tipo: {{ categoria.tipo }}</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <form method="POST" action="{% url 'eliminar_categoria' categoria.id %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button class="btn btn-secondary mt-3" type="button" onclick="window.location.href='{% url 'inicio' %}';">Volver</button>
+    </div>
+
+    <script>
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            const searchText = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#categoriaTableBody tr');
+            
+            rows.forEach(row => {
+                const tipo = row.querySelector('.tipo').textContent.toLowerCase();
+                row.style.display = tipo.includes(searchText) ? '' : 'none';
+            });
+        });
+    </script>
+    
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Registrar Categoría{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1 class="text-center">Registrar Categoría</h1>
+
+        <form method="POST" class="needs-validation" novalidate>
+            {% csrf_token %}
+            
+            <div class="form-group mb-3">
+                <label for="tipo" class="form-label">Tipo</label>
+                <input type="text" class="form-control" id="tipo" name="tipo" required>
+                <div class="valid-feedback">
+                    ¡Se ve bien!
+                </div>
+                <div class="invalid-feedback">
+                    Por favor, proporciona un tipo válido.
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3">Registrar</button>
+            <button class="btn btn-secondary mt-3" type="button" onclick="window.location.href='{% url 'inicio' %}';">Volver</button>
+        </form>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} mt-2">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <script>
+        (function () {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+{% endblock %}

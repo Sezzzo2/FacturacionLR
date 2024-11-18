@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Historial de Avisos{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="text-center-header">Historial de Avisos</h1>
+        <form class="needs-validation" novalidate>
+            <input type="text" class="form-control search-bar" placeholder="Buscar aviso..." id="searchInput" required>
+            <div class="invalid-feedback">
+                Por favor, ingresa un término de búsqueda.
+            </div>
+        </form>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Descripción</th>
+                <th scope="col">Categoría</th>
+                <th scope="col">Opciones</th>
+            </tr>
+        </thead>
+        <tbody id="avisoTableBody">
+            {% for aviso in avisos %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td class="descripcion">{{ aviso.descripcion }}</td>
+                    <td>{{ aviso.Id_Categoria.tipo }}</td>
+                    <td>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditar{{ aviso.id }}">
+                            <i class="bi bi-pencil"></i> Editar
+                        </button>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminar{{ aviso.id }}">
+                            <i class="bi bi-trash"></i> Eliminar
+                        </button>
+
+                        <div class="modal fade" id="modalEditar{{ aviso.id }}" tabindex="-1" aria-labelledby="editarModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editarModalLabel">Editar Aviso</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form method="POST" action="{% url 'actualizar_aviso' aviso.id %}" class="needs-validation" novalidate>
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <label for="descripcion">Descripción</label>
+                                                <input type="text" class="form-control" id="descripcion" name="descripcion" value="{{ aviso.descripcion }}" required>
+                                                <div class="invalid-feedback">
+                                                    Por favor, proporciona una descripción válida.
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="categoria">Categoría</label>
+                                                <select class="form-control" id="categoria" name="categoria" required>
+                                                    {% for categoria in categorias %}
+                                                        <option value="{{ categoria.id }}" {% if aviso.Id_Categoria.id == categoria.id %}selected{% endif %}>{{ categoria.tipo }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <div class="invalid-feedback">
+                                                    Por favor, selecciona una categoría válida.
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-primary">Actualizar</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="modalEliminar{{ aviso.id }}" tabindex="-1" aria-labelledby="eliminarModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="eliminarModalLabel">Confirmar Eliminación</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p class="text-danger"><strong>Advertencia:</strong> Esta acción es irreversible. ¿Estás seguro de que deseas eliminar este aviso?</p>
+                                        <p>Descripción: {{ aviso.descripcion }}</p>
+                                        <p>Categoría: {{ aviso.Id_Categoria.tipo }}</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <form method="POST" action="{% url 'eliminar_aviso' aviso.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button class="btn btn-secondary mb-3" onclick="window.history.back();">Volver</button>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const tableBody = document.getElementById('avisoTableBody');
+
+        if (searchInput && tableBody) {
+            searchInput.addEventListener('input', function() {
+                const searchText = this.value.trim().toLowerCase();
+                const rows = tableBody.getElementsByTagName('tr');
+
+                Array.from(rows).forEach(row => {
+                    const descripcion = row.querySelector('.descripcion').textContent.toLowerCase();
+                    row.style.display = descripcion.includes(searchText) ? '' : 'none';
+                });
+            });
+        }
+    });
+</script>
+
+
+{% endblock %}

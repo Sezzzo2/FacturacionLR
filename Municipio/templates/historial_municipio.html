@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Historial Municipio{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1>Historial de Municipios</h1>
+            <input type="text" class="form-control search-bar" placeholder="Buscar municipio..." id="searchInput">
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Departamento</th>
+                    <th scope="col">Opciones</th>
+                </tr>
+            </thead>
+            <tbody id="municipioTableBody">
+                {% for municipio in municipios %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td class="nombre">{{ municipio.nombre }}</td>
+                        <td>{{ municipio.Id_Departamento.nombre }}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditar{{ municipio.id }}">
+                                <i class="bi bi-pencil"></i> Editar
+                            </button>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminar{{ municipio.id }}">
+                                <i class="bi bi-trash"></i> Eliminar
+                            </button>
+
+                            <div class="modal fade" id="modalEditar{{ municipio.id }}" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalEditarLabel">Editar Municipio</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="POST" action="{% url 'actualizar_municipio' municipio.id %}">
+                                                {% csrf_token %}
+                                                <div class="form-group">
+                                                    <label for="nombre">Nombre</label>
+                                                    <input type="text" class="form-control" id="nombre" name="nombre" value="{{ municipio.nombre }}" required>
+                                                </div>
+                                                <div class="form-group mt-3">
+                                                    <label for="departamento">Departamento</label>
+                                                    <select class="form-control" id="departamento" name="departamento" required>
+                                                        {% for departamento in departamentos %}
+                                                            <option value="{{ departamento.id }}" {% if municipio.Id_Departamento.id == departamento.id %}selected{% endif %}>{{ departamento.nombre }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modal de Confirmación de Eliminación -->
+                            <div class="modal fade" id="modalEliminar{{ municipio.id }}" tabindex="-1" aria-labelledby="modalEliminarLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalEliminarLabel">Confirmar Eliminación</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p class="text-danger"><strong>Advertencia:</strong> Esta acción es irreversible. ¿Estás seguro de que deseas eliminar este municipio?</p>
+                                            <p>Nombre: {{ municipio.nombre }}</p>
+                                            <p>Departamento: {{ municipio.Id_Departamento.nombre }}</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <form method="POST" action="{% url 'eliminar_municipio' municipio.id %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button class="btn btn-secondary mt-3" type="button" onclick="window.location.href='{% url 'inicio' %}';">Volver</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const tableBody = document.getElementById('municipioTableBody');
+
+            if (searchInput && tableBody) {
+                searchInput.addEventListener('input', function() {
+                    const searchText = this.value.trim().toLowerCase();
+                    const rows = tableBody.getElementsByTagName('tr');
+
+                    Array.from(rows).forEach(row => {
+                        const nombre = row.querySelector('.nombre').textContent.toLowerCase();
+                        row.style.display = nombre.includes(searchText) ? '' : 'none';
+                    });
+                });
+            }
+        });
+    </script>
+
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h1 class="text-center">Registrar Cliente</h1>
+    <form class="row g-3 needs-validation" method="POST" novalidate>
+        {% csrf_token %}
+        
+        <div class="col-md-6">
+            <label for="validationNombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="validationNombre" name="nombre" required>
+            <div class="valid-feedback">
+                ¡Se ve bien!
+            </div>
+            <div class="invalid-feedback">
+                Por favor, proporciona un nombre válido.
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <label for="validationIdentificacion" class="form-label">Identificación</label>
+            <input type="number" class="form-control" id="validationIdentificacion" name="identificacion" required>
+            <div class="valid-feedback">
+                ¡Se ve bien!
+            </div>
+            <div class="invalid-feedback">
+                Por favor, proporciona una identificación válida.
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <label for="validationCorreo" class="form-label">Correo Electrónico</label>
+            <input type="email" class="form-control" id="validationCorreo" name="correo_electronico"  required>
+            <div class="valid-feedback">
+                ¡Se ve bien!
+            </div>
+            <div class="invalid-feedback">
+                Por favor, proporciona un correo electrónico válido.
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <label for="validationAviso" class="form-label">Aviso</label>
+            <select class="form-select" id="validationAviso" name="Id_Aviso" required>
+                <option selected disabled value="">Selecciona un aviso</option>
+                {% for aviso in avisos %}
+                    <option value="{{ aviso.id }}">{{ aviso.descripcion }}</option>
+                {% endfor %}
+            </select>
+            <div class="valid-feedback">
+                ¡Se ve bien!
+            </div>
+            <div class="invalid-feedback">
+                Por favor, selecciona un aviso válido.
+            </div>
+        </div>
+        <div class="col-12">
+            <button class="btn btn-primary" type="submit">Registrar Cliente</button>
+            <button class="btn btn-secondary" onclick="window.location.href='{% url 'inicio' %}';">Volver</button>
+        </div>
+    </form>
+    
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} mt-2">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+</div>
+
+<script>
+    (function () {
+        'use strict'
+        const forms = document.querySelectorAll('.needs-validation')
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
+
+{% endblock %}

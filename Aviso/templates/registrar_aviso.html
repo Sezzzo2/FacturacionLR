@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Registrar Aviso{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center">Registrar Aviso</h1>
+    <form class="needs-validation" method="POST" novalidate>
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea class="form-control" id="descripcion" name="descripcion" required></textarea>
+            <div class="invalid-feedback">
+                Por favor, proporciona una descripción.
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="Id_Categoria" class="form-label">Categoría</label>
+            <select class="form-select" id="Id_Categoria" name="Id_Categoria" required>
+                <option selected disabled value="">Selecciona una categoría</option>
+                {% for categoria in categorias %}
+                    <option value="{{ categoria.id }}">{{ categoria.tipo }}</option>
+                {% endfor %}
+            </select>
+            <div class="invalid-feedback">
+                Por favor, selecciona una categoría.
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Registrar</button>
+        <a href="{% url 'inicio' %}" class="btn btn-secondary">Regresar</a>
+    </form>
+</div>
+
+<script>
+    (function () {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
+{% endblock %}

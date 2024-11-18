@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Registrar Factura{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1 class="text-center">Registrar Factura</h1>
+        <form method="POST" class="needs-validation" novalidate>
+            {% csrf_token %}
+            
+            <!-- Campo de Fecha -->
+            <div class="mb-3">
+                <label for="fecha" class="form-label">Fecha</label>
+                <input type="date" class="form-control" id="fecha" name="fecha" required>
+                <div class="invalid-feedback">
+                    Por favor, proporciona una fecha válida.
+                </div>
+            </div>
+
+            <!-- Campo de Valor -->
+            <div class="mb-3">
+                <label for="valor" class="form-label">Valor</label>
+                <input type="number" class="form-control" id="valor" name="valor" min="0" required>
+                <div class="invalid-feedback">
+                    Por favor, proporciona un valor válido.
+                </div>
+            </div>
+
+            <!-- Selección de Método de Pago -->
+            <div class="mb-3">
+                <label for="Id_MetodoPago" class="form-label">Método de Pago</label>
+                <select class="form-select" id="Id_MetodoPago" name="Id_MetodoPago" required>
+                    <option selected disabled value="">Selecciona un método de pago</option>
+                    {% for metodo in metodos_pago %}
+                        <option value="{{ metodo.id }}">{{ metodo.nombre }}</option>
+                    {% endfor %}
+                </select>
+                <div class="invalid-feedback">
+                    Por favor, selecciona un método de pago válido.
+                </div>
+            </div>
+
+            <!-- Selección de Sede -->
+            <div class="mb-3">
+                <label for="sede" class="form-label">Sede</label>
+                <select class="form-select" id="Id_Sede" name="Id_Sede" required>
+                    <option selected disabled value="">Selecciona una sede</option>
+                    {% for sede in sedes %}
+                        <option value="{{ sede.id }}">{{ sede.nombre }}</option>
+                    {% endfor %}
+                </select>
+                <div class="invalid-feedback">
+                    Por favor, selecciona una sede válida.
+                </div>
+            </div>
+
+            <!-- Selección de Cliente -->
+            <div class="mb-3">
+                <label for="cliente" class="form-label">Cliente</label>
+                <select class="form-select" id="Id_Cliente" name="Id_Cliente" required>
+                    <option selected disabled value="">Selecciona un cliente</option>
+                    {% for cliente in clientes %}
+                        <option value="{{ cliente.id }}">{{ cliente.nombre }}</option>
+                    {% endfor %}
+                </select>
+                <div class="invalid-feedback">
+                    Por favor, selecciona un cliente válido.
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Registrar</button>
+            <button class="btn btn-secondary" onclick="window.location.href='{% url 'inicio' %}';">Volver</button>
+
+        </form>
+    </div>
+
+    <script>
+        (function () {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+{% endblock %}

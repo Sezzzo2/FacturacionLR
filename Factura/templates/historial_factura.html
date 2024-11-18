@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Historial de Facturas{% endblock %}
+
+{% block content %}
+
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1>Historial de Facturas</h1>
+            <input type="text" class="form-control search-bar" placeholder="Buscar por valor..." id="searchInput">
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Valor</th>
+                    <th scope="col">Método de Pago</th>
+                    <th scope="col">Sede</th>
+                    <th scope="col">Empleado</th>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Aviso</th>
+                    <th scope="col">Categoría de Aviso</th>
+                    <th scope="col">Opciones</th>
+                </tr>
+            </thead>
+            <tbody id="facturaTableBody">
+                {% for factura in facturas %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ factura.fecha }}</td>
+                        <td class="valor">{{ factura.valor }}</td>
+                        <td>{{ factura.Id_MetodoPago.nombre }}</td>
+                        <td>{{ factura.Id_Sede.nombre }}</td>
+                        <td>{{ factura.Id_Empleado.username }}</td>
+                        <td>{{ factura.Id_Cliente.nombre }}</td>
+                        <td>{{ factura.Id_Cliente.Id_Aviso.descripcion }}</td>
+                        <td>{{ factura.Id_Cliente.Id_Aviso.Id_Categoria.tipo }}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditar{{ factura.id }}">
+                                <i class="bi bi-pencil"></i> Editar
+                            </button>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminar{{ factura.id }}">
+                                <i class="bi bi-trash"></i> Eliminar
+                            </button>
+                            <div class="modal fade" id="modalEditar{{ factura.id }}" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalEditarLabel">Editar Factura</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="POST" action="{% url 'actualizar_factura' factura.id %}">
+                                                {% csrf_token %}
+                                                <div class="form-group">
+                                                    <label for="fecha">Fecha</label>
+                                                    <input type="date" class="form-control" id="fecha" name="fecha" value="{{ factura.fecha }}" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="valor">Valor</label>
+                                                    <input type="number" class="form-control" id="valor" name="valor" value="{{ factura.valor }}" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="metodo_pago">Método de Pago</label>
+                                                    <select class="form-control" id="metodo_pago" name="Id_MetodoPago" required>
+                                                        {% for metodo in metodos_pago %}
+                                                            <option value="{{ metodo.id }}" {% if factura.Id_MetodoPago.id == metodo.id %}selected{% endif %}>{{ metodo.nombre }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="sede">Sede</label>
+                                                    <select class="form-control" id="sede" name="Id_Sede" required>
+                                                        {% for sede in sedes %}
+                                                            <option value="{{ sede.id }}" {% if factura.Id_Sede.id == sede.id %}selected{% endif %}>{{ sede.nombre }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="cliente">Cliente</label>
+                                                    <select class="form-control" id="cliente" name="Id_Cliente" required>
+                                                        {% for cliente in clientes %}
+                                                            <option value="{{ cliente.id }}" {% if factura.Id_Cliente.id == cliente.id %}selected{% endif %}>{{ cliente.nombre }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary mt-3">Actualizar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade" id="modalEliminar{{ factura.id }}" tabindex="-1" aria-labelledby="modalEliminarLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalEliminarLabel">Confirmar Eliminación</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p class="text-danger"><strong>Advertencia:</strong> Esta acción es irreversible. ¿Estás seguro de que deseas eliminar esta factura?</p>
+                                            <p>Fecha: {{ factura.fecha }}</p>
+                                            <p>Valor: {{ factura.valor }}</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <form method="POST" action="{% url 'eliminar_factura' factura.id %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button class="btn btn-secondary" onclick="window.location.href='{% url 'inicio' %}';">Volver</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const tableBody = document.getElementById('facturaTableBody');
+    
+            if (searchInput && tableBody) {
+                searchInput.addEventListener('input', function() {
+                    const searchText = this.value.trim().toLowerCase();
+                    const rows = tableBody.getElementsByTagName('tr');
+    
+                    Array.from(rows).forEach(row => {
+                        const valor = row.querySelector('.valor').textContent.toLowerCase();
+                        row.style.display = valor.includes(searchText) ? '' : 'none';
+                    });
+                });
+            }
+        });
+    </script>
+    
+
+{% endblock %}

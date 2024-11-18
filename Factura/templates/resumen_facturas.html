@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Resumen de Facturas{% endblock %}
+
+{% block content %}
+
+    <div class="container mt-4">
+        <h1>Resumen de Facturas</h1>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-header">Total de Facturas</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ total_facturas }}</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-header">Valor Total</div>
+                    <div class="card-body">
+                        <h5 class="card-title">${{ total_valor }}</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-header">Sede con Mayor Venta</div>
+                    <div class="card-body">
+                        {% if sede_con_mayor_venta %}
+                            <h5 class="card-title">{{ sede_con_mayor_venta.Id_Sede__nombre }}</h5>
+                            <p class="card-text">Total: ${{ sede_con_mayor_venta.total_venta }}</p>
+                        {% else %}
+                            <h5 class="card-title">Sin datos</h5>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="mt-4">Detalles Adicionales</h3>
+        <div class="mb-3">
+            {% if metodo_pago_mas_usado %}
+                <p style="font-family: Arial, sans-serif; font-size: 24px;">
+                    <strong>Método de Pago Más Usado:</strong> 
+                    {{ metodo_pago_mas_usado.Id_MetodoPago__nombre }} 
+                    ({{ metodo_pago_mas_usado.id__count }} veces)
+                </p>
+            {% else %}
+                <p>No hay datos suficientes para determinar el método de pago más usado.</p>
+            {% endif %}
+        </div>
+
+        <h4 class="mt-3">Cantidad de Facturas por Sede:</h4>
+        <ul class="list-group">
+            {% for sede in cantidad_facturas_por_sede %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ sede.Id_Sede__nombre }}
+                    <span class="badge bg-primary rounded-pill">{{ sede.id__count }}</span>
+                </li>
+            {% empty %}
+                <li class="list-group-item">No hay facturas registradas.</li>
+            {% endfor %}
+        </ul>
+
+        <button class="btn btn-secondary mb-3 mt-3" onclick="window.location.href='{% url 'inicio' %}';">Volver</button>
+
+    </div>
+
+{% endblock %}
+

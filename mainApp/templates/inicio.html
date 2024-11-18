@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio - Sistema de Facturación{% endblock %}
+
+{% block content %}
+    <h1 class="text-center">Bienvenido al Sistema de Facturación</h1>
+    <p class="text-center">Selecciona una opción en el menú de navegación para gestionar el sistema.</p>
+
+    <div class="accordion accordion-flush" id="accordionFlushExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                    ¿Qué es el diario La República?
+                </button>
+            </h2>
+            <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                    El diario La República es un medio de comunicación económico y financiero en Colombia que ofrece información relevante sobre negocios, finanzas, economía, y noticias de actualidad nacional e internacional. Fundado en 1954, es una fuente confiable para empresarios y profesionales que buscan mantenerse actualizados.
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                    Visión
+                </button>
+            </h2>
+            <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                    Ser el medio de comunicación líder en información económica y financiera en Colombia, reconocido por su calidad periodística, innovación tecnológica, y su capacidad para influir en la toma de decisiones estratégicas de los sectores empresariales y gubernamentales.
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                    Misión
+                </button>
+            </h2>
+            <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                    Informar de manera precisa y oportuna sobre los acontecimientos económicos, financieros y empresariales, contribuyendo al desarrollo del país y fomentando la transparencia y el conocimiento en la comunidad de negocios.
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

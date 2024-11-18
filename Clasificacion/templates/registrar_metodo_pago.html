@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Registrar Método de Pago{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1 class="text-center">Registrar Método de Pago</h1>
+        <form method="POST" class="needs-validation" novalidate>
+            {% csrf_token %}
+            
+            <div class="form-group mb-3">
+                <label for="nombre" class="form-label">Nombre del Método de Pago</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" required>
+                <div class="valid-feedback">
+                    ¡Se ve bien!
+                </div>
+                <div class="invalid-feedback">
+                    Por favor, proporciona un nombre válido.
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Registrar</button>
+            <button class="btn btn-secondary" type="button" onclick="window.location.href='{% url 'inicio' %}';">Volver</button>
+        </form>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} mt-2">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <script>
+        (function () {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+{% endblock %}

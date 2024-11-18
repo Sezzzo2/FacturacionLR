@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Registrar Empleado{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center">Registrar Empleado</h1>
+    <form class="row g-3 needs-validation" method="POST" novalidate>
+        {% csrf_token %}
+
+        <div class="col-md-6">
+            <label for="validationUsername" class="form-label">Nombre de Usuario</label>
+            <input type="text" class="form-control" id="validationUsername" name="username" required>
+            <div class="valid-feedback">
+                ¡Se ve bien!
+            </div>
+            <div class="invalid-feedback">
+                Por favor, proporciona un nombre de usuario válido.
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <label for="validationPassword" class="form-label">Contraseña</label>
+            <input type="password" class="form-control" id="validationPassword" name="password" required>
+            <div class="valid-feedback">
+                ¡Se ve bien!
+            </div>
+            <div class="invalid-feedback">
+                Por favor, proporciona una contraseña válida.
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <label for="validationRol" class="form-label">Rol</label>
+            <select class="form-select" id="validationRol" name="rol" required>
+                <option selected disabled value="">Selecciona un rol</option>
+                {% for rol_value, rol_name in role_choices %}
+                    <option value="{{ rol_value }}">{{ rol_name }}</option>
+                {% endfor %}
+            </select>
+            <div class="valid-feedback">
+                ¡Se ve bien!
+            </div>
+            <div class="invalid-feedback">
+                Por favor, selecciona un rol válido.
+            </div>
+        </div>
+
+        <div class="col-12">
+            <button class="btn btn-primary" type="submit">Registrar Empleado</button>
+            <button class="btn btn-secondary" onclick="window.location.href='{% url 'inicio' %}';">Volver</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    (function () {
+        'use strict'
+        const forms = document.querySelectorAll('.needs-validation')
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
+{% endblock %}

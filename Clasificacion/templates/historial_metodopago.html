@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Historial de Métodos de Pago{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1>Historial de Métodos de Pago</h1>
+            <input type="text" class="form-control search-bar" placeholder="Buscar por nombre..." id="searchInput">
+        </div>
+        <table class="table mt-3">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Opciones</th>
+                </tr>
+            </thead>
+            <tbody id="metodoPagoTableBody">
+                {% for metodo in metodos_pago %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td class="nombre">{{ metodo.nombre }}</td>
+                        <td>
+                            <!-- Botón para editar -->
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditar{{ metodo.id }}">
+                                <i class="bi bi-pencil"></i> Editar
+                            </button>
+
+                            <!-- Botón para eliminar -->
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminar{{ metodo.id }}">
+                                <i class="bi bi-trash"></i> Eliminar
+                            </button>
+
+                            <!-- Modal para editar -->
+                            <div class="modal fade" id="modalEditar{{ metodo.id }}" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalEditarLabel">Editar Método de Pago</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="POST" action="{% url 'actualizar_metodo_pago' metodo.id %}">
+                                                {% csrf_token %}
+                                                <div class="form-group mb-3">
+                                                    <label for="nombre">Nombre</label>
+                                                    <input type="text" class="form-control" id="nombre" name="nombre" value="{{ metodo.nombre }}" required>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Actualizar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modal para eliminar -->
+                            <div class="modal fade" id="modalEliminar{{ metodo.id }}" tabindex="-1" aria-labelledby="modalEliminarLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalEliminarLabel">Confirmar Eliminación</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p class="text-danger"><strong>Advertencia:</strong> Esta acción es irreversible. ¿Estás seguro de que deseas eliminar este método de pago?</p>
+                                            <p>Nombre: {{ metodo.nombre }}</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <form method="POST" action="{% url 'eliminar_metodo_pago' metodo.id %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button class="btn btn-secondary mt-3" type="button" onclick="window.location.href='{% url 'inicio' %}';">Volver</button>
+    </div>
+
+    <script>
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            const searchText = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#metodoPagoTableBody tr'); // Asegúrate de que este ID coincida con tu tabla
+    
+            rows.forEach(row => {
+                const nombre = row.querySelector('.nombre').textContent.toLowerCase();
+                row.style.display = nombre.includes(searchText) ? '' : 'none';
+            });
+        });
+    </script>
+    
+
+
+{% endblock %}

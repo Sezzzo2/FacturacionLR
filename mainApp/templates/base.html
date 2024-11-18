@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Panel de Administración{% endblock %}</title>
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="{% static 'images/facturaLR.png' %}" alt="Logo" class="d-inline-block align-text-top">
+                Sistema de Facturación
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'inicio' %}" style="color: #ffffff;";>Inicio</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="clienteDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Cliente
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="clienteDropdown">
+                            <li><a class="dropdown-item" href="{% url 'registrar_cliente' %}">Agregar Cliente</a></li>
+                            <li><a class="dropdown-item" href="{% url 'historial_cliente' %}">Historial de Clientes</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="facturaDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Factura
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="facturaDropdown">
+                            <li><a class="dropdown-item" href="{% url 'registrar_factura' %}">Agregar Factura</a></li>
+                            <li><a class="dropdown-item" href="{% url 'historial_factura' %}">Historial de Facturas</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="avisoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Aviso
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="avisoDropdown">
+                            <li><a class="dropdown-item" href="{% url 'registrar_aviso' %}">Agregar Aviso</a></li>
+                            <li><a class="dropdown-item" href="{% url 'historial_aviso' %}">Historial de Avisos</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="empleadoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Empleado
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="empleadoDropdown">
+                            <li><a class="dropdown-item" href="{% url 'registrar_empleado' %}">Agregar Empleado</a></li>
+                            <li><a class="dropdown-item" href="{% url 'historial_empleado' %}">Historial de Empleados</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="ubicacionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Ubicación
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="ubicacionDropdown">
+                            <li><a class="dropdown-item" href="{% url 'registrar_sede' %}">Agregar Sede</a></li>
+                            <li><a class="dropdown-item" href="{% url 'historial_sede' %}">Historial de Sedes</a></li>
+                            <li><a class="dropdown-item" href="{% url 'registrar_municipio' %}">Agregar Municipio</a></li>
+                            <li><a class="dropdown-item" href="{% url 'historial_municipio' %}">Historial de Municipios</a></li>
+                            <li><a class="dropdown-item" href="{% url 'registrar_departamento' %}">Agregar Departamento</a></li>
+                            <li><a class="dropdown-item" href="{% url 'historial_departamento' %}">Historial de Departamentos</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="clasificacionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Clasificación
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="clasificacionDropdown">
+                            <li><a class="dropdown-item" href="{% url 'registrar_metodo_pago' %}">Agregar Método de Pago</a></li>
+                            <li><a class="dropdown-item" href="{% url 'historial_metodo_pago' %}">Historial de Métodos de Pago</a></li>
+                            <li><a class="dropdown-item" href="{% url 'registrar_categoria' %}">Agregar Categoría</a></li>
+                            <li><a class="dropdown-item" href="{% url 'historial_categoria' %}">Historial de Categorías</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'resumen_facturas' %}">Resumen Estadístico</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-danger text-white" href="{% url 'logout' %}">Cerrar Sesión</a>
+                    </li>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
